@@ -23,14 +23,13 @@ exports.bicicleta_delete = function(req,res){
 }
 
 exports.bicicleta_update= (req, res) => {
-    var newbici= Bicicleta.findById(req.params.id);
+    var newbici= Bicicleta.findById(req.body.id);
     
-    newbici.id = req.body.id
+    newbici.id = req.body.id;
     newbici.color = req.body.color;
     newbici.modelo = req.body.modelo;   
-    newbici.ubicacion = [req.body.lat, req.body.long];
+    newbici.ubicacion = [req.body.lat, req.body.lon];
     
-
     res.status(200).json({
         bicicleta : newbici
     })
