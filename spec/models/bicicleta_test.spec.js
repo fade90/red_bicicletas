@@ -1,5 +1,7 @@
 var mongoose = require("mongoose");
 var Bicicleta = require("../../models/bicicleta");
+var Usuario = require("../../models/usuario");
+var Reserva = require("../../models/reserva");
 
 describe("Testing Bicicletas", function() {
     beforeAll(function(done) {
@@ -48,7 +50,8 @@ describe("Testing Bicicletas", function() {
     describe("Bicicleta.add", () => {
         it("agrega solo una bici", (done) => {
             var aBici = new Bicicleta({code: 1, color: "verde", modelo: "urbana"});
-            Bicicleta.addListener(aBici,function(err, newBici){
+            
+            Bicicleta.add(aBici,function(err, newBici){
                 if (err) console.log(err);
                 Bicicleta.allBicis(function(err, bicis){
                     expect(bicis.length).toEqual(1);
@@ -60,7 +63,32 @@ describe("Testing Bicicletas", function() {
         });
     });
 
+    describe("Bicicleta.findByCode", () => {
+        it("debe devolver la bici con code 1", (done) => {
+            Bicicleta.allBicis(function(err, bicis){
+                expect(bicis.length).toBe(0);
 
+
+                var aBici = new Bicicleta({code: 1, color: "verde", modelo: "urbana"});
+                Bicicleta.add(aBici,function(err, newBici){
+                    if (err) console.log(err);
+
+                    var aBici2 = new Bicicleta({code: 2, color: "roja", modelo: "urbana"});
+                    Bicicleta.add(aBici2,function(err, newBici){
+                        if (err) console.log(err);
+                        bicicleta.findByCode(1, function (error, targetBici){
+                            expect(targetBici.code).toBe(aBici.code);
+                            expect(targetBici.color).toBe(aBici.color);
+                            expect(targetBici.modelo).toBe(aBici.modelo);
+
+                            done();
+
+                        });
+                    });
+                });
+            });
+        });
+    });   
 
 
 });
