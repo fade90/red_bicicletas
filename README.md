@@ -12,3 +12,11 @@ Ingresa a la terminal (cmd) e ingresa el siguiente código
 npm install
 
 e inicia el server con npm run devstart
+
+## Tests Jasmine
+
+iniciar siguientes tests;
+
+jasmine spec/models/bicicleta_test.spec.js
+jasmine spec/models/usuario_test.spec.js
+
