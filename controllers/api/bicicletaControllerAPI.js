@@ -16,7 +16,7 @@ exports.bicicleta_create= function(req, res){
 };
 
 
-exports.bicicleta_update= (req, res) => {
+exports.bicicleta_update= function (req, res){
     var bici= Bicicleta.findById(req.body.id);
     
     bici.id = req.body.id;

@@ -14,6 +14,7 @@ exports.bicicleta_create_post = function(req, res){
     bici.ubicacion = [req.body.lat, req.body.lon];
     Bicicleta.add(bici);
     
+    
     res.redirect("/bicicletas");
 }
 
