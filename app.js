@@ -1,3 +1,4 @@
+require("dotenv").config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -32,7 +33,11 @@ app.use(session({
 
 var mongoose = require("mongoose");
 
-var mongoDB = "mongodb://localhost/red_bicicletas";
+// si estoy en el ambiente de desarrollo > USAR >>
+//var mongoDB = "mongodb://localhost/red_bicicletas";
+// sino USAR >>
+var mongoDB = process.env.MONGO_URI;
+
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise =global.Promise;
 var db = mongoose.connection;
