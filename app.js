@@ -99,6 +99,12 @@ app.use('/privacy_policy', function (req, res) {
   res.sendFile('public/privacy_policy.html');
 });
 
+
+app.use('/googlebec72500f75c9e45', function (req, res) {
+  res.sendFile('public/googlebec72500f75c9e45.html');
+});
+
+
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
