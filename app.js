@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require('./config/passport');
 const session = require('express-session');
+const MongoDBStore = require("connect-mongodb-session")(session);
 const jwt = require('jsonwebtoken');
 
 var indexRouter = require('./routes/index');
@@ -17,7 +18,21 @@ var usuariosAPIRouter = require('./routes/api/usuarios');
 var authApiRouter = require('./routes/api/auth');
 
 
-const store = new session.MemoryStore;
+let store;
+if (process.env.NODE_ENV === 'development') {
+  store = new session.MemoryStore;
+} 
+else {
+  store = new MongoDBStore({
+    uri: process.env.MONGO_URI,
+    collection: 'sessions'
+  });
+  store.on('error', function(error) {
+    assert.ifError(error);
+    assert.ok(false);
+  });
+}
+
 
 var app = express();
 
@@ -72,15 +87,54 @@ app.post('/login', function(req, res, next){
 
 app.get('/logout', function(req , res){
   req.logOut();
-  res.redirect('/');
+  res.redirect('session/login');
 });
 
 app.get('/forgotPassword', function(req, res){
+  res.render('session/forgotPassword');
 
 });
 
 app.post('/forgotPassword', function(req, res){
+  Usuario.findOne( { email: req.body.email }, function (err, usuario) {
+    if (!usuario) return res.render('session/forgotPassword', {info: {message: 'No existe el email para un usuario existente.'}});
 
+    usuario.resetPassword(function(err) {
+      if (err) return next(err);
+      console.log('session/forgotPasswordMessage');
+    });
+    
+    res.render('session/forgotPasswordMessage');
+  });
+});
+
+app.get('/resetPassword/:token', function(req, res, next) {
+  Token.findOne({ token: req.params.token }, function ( err, token ) {
+    if (!token) return res.status(400).send( { type: 'not-verifified', msg: 'No existe un usuario asociado al token. Verifique que su token no haya expirado'});
+
+    Usuario.findById(token._userId, function (err, usuario) {
+      if (!usuario) return res.status(400).send( { msg: 'No existe un usuario asociado al token'});
+      res.render('session/resetPassword', { errors: {}, usuario: usuario});
+    });
+  });
+});
+
+app.post('/resetPassword', function(req, res) {
+  if (req.body.password != req.body.confirm_password) {
+    res.render('session/resetPassword', {errors: {confirm_password: {message: 'No coincide con el password ingresado'}},
+        usuario: new Usuario({ email: req.body.email })});
+    return;
+  }
+  Usuario.findOne({ email: req.body.email }, function ( err, usuario ) {
+      usuario.password = req.body.password; 
+      usuario.save(function(err) {
+        if (err) {
+          res.render('session/resetPassword', {errors: err.errors, usuario: new Usuario({ email: req.body.email })});
+        }
+        else {
+          res.redirect('session/login');
+        }});        
+      });
 });
 
 
@@ -103,6 +157,18 @@ app.use('/privacy_policy', function (req, res) {
 app.use('/googlebec72500f75c9e45', function (req, res) {
   res.sendFile('public/googlebec72500f75c9e45.html');
 });
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: 
+      [ 'https://www.googleapis.com/auth/plus.login',
+      , 'https://www.googleapis.com/auth/plus.profile.emails.read' ] }
+));
+
+app.get( '/auth/google/callback', passport.authenticate( 'google', { 
+        successRedirect: '/',
+        failureRedirect: '/error'
+    })
+);
 
 
 app.use('/', indexRouter);
