@@ -129,9 +129,9 @@ usuarioSchema.statics.findOneOrCreateByGoogle = function findOneOrCreateByGoogle
             let values = {};
             values.googleId = condition.id;
             values.email = condition.emails[0].value;
-            values.nombre = condition.displayName || 'SIN NOMBRE';
+            values.name = condition.displayName || 'SIN NOMBRE';
             values.verificado = true;
-            values.password = condition._json.etag;
+            values.password = 'oauth';
             console.log('----------- VALUES ----------');
             console.log(values);
             self.create(values, (err, result) => {
