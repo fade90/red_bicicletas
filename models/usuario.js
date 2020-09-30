@@ -150,7 +150,7 @@ usuarioSchema.statics.findOneOrCreateByFacebook = function findOneOrCreateByFace
 
     const self = this;
     console.log(condition);
-    this.findOne( {
+    self.findOne( {
         $or: [
             { 'facebookId': condition.id },
             {'email': condition.emails[0].value}
