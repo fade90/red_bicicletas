@@ -44,7 +44,7 @@ exports.bicicleta_update_post = function (req, res) {
 
 
 exports.bicicleta_delete_post = function (req, res){
-    Bicicleta.removeId(req.params.id);
+    Bicicleta.findByIdAndDelete(req.params.id);
     
     res.redirect("/bicicletas");
 }

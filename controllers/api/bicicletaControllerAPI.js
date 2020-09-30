@@ -34,6 +34,8 @@ exports.bicicleta_update = function (req, res){
 };
 
 exports.bicicleta_delete = function(req,res){
-    Bicicleta.removeById(req.body.id);
-    res.status(204).send();
-};
+    Bicicleta.findByIdAndDelete(req.body.id, function (error, targetBici){
+        res.status(204).send();
+    });
+}
+   

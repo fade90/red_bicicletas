@@ -89,9 +89,25 @@ describe("Testing Bicicletas", function() {
             });
         });
     });   
+    describe('Bicicleta.removeById', () => {
+        it('se debe eliminar una bici y quedar en 0', (done) => {
+            Bicicleta.allBicis(function (err, bicis) {
+                expect(bicis.length).toBe(0);
 
+                var aBici = new Bicicleta({ code: 1, color: 'verde', modelo: 'urbana' });
+                Bicicleta.add(aBici, function (err, newBici) {
+                    if (err) console.log(err);
 
-});
+                    Bicicleta.removeByCode(1, function (error, targetBici) {
+                        expect(bicis.length).toBe(0);
+
+                        done()
+                    })
+                })
+            })
+        })
+    })
+})
 
 
 /*
