@@ -104,7 +104,7 @@ usuarioSchema.methods.resetPassword = function(cb) {
             from: 'no-reply@redbicicletas.com',
             to: email_destination,
             subject: 'Reseteo de password de cuenta',
-            text: 'Por favor, para resetear el password de su cuenta haga click en este link:'+ 'http://localhost:3000' + '\/resetPassword\/' + token.token + '.\n'
+            text: 'Por favor, para resetear el password de su cuenta haga click en este link:'+ process.env.HOST + '\/resetPassword\/' + token.token + '.\n'
         };
         mailer.sendMail(mailOptions, function(err){
             if (err) { return cb(err);}
