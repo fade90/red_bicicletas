@@ -45,8 +45,10 @@ var usuarioSchema = new Schema({
     verificado: {
         type: Boolean,
         default: false
-    }
+    },
 
+    googleId: String
+    
 });
 
 usuarioSchema.plugin(uniqueValidator,  {message: 'El {PATH} ya existe con otr ususario.'} );
@@ -81,7 +83,7 @@ usuarioSchema.methods.enviar_email_bienvenida = function(cb){
             from: 'no-reply@redbicicletas.com',
             to: email_destination,
             subject: 'Verificación de cuenta',
-            text: 'Hola,\n\n' + 'Por favor, para verificar su cuenta haga click en este enlace: ' + 'http://localhost:3000' + '\/token/confirmation\/' + token.token + '.\n'
+            text: 'Hola,\n\n' + 'Por favor, para verificar su cuenta haga click en este enlace:\n\n' + process.env.HOST + '\/token/confirmation\/' + token.token + '.\n'
         };
 
         mailer.sendMail(mailOptions, function(err){
@@ -116,9 +118,10 @@ usuarioSchema.statics.findOneOrCreateByGoogle = function findOneOrCreateByGoogle
 
     const self = this;
     console.log(condition);
-    self.findOne( {
+    this.findOne( {
         $or: [
-            { 'googleId': condition.id }, {'email': condition.emails[0].value}
+            { 'googleId': condition.id },
+            { 'email': condition.emails[0].value }
     ]}, (err, result) => {
         if (result) {
             callback(err, result)
@@ -129,9 +132,9 @@ usuarioSchema.statics.findOneOrCreateByGoogle = function findOneOrCreateByGoogle
             let values = {};
             values.googleId = condition.id;
             values.email = condition.emails[0].value;
-            values.name = condition.displayName || 'SIN NOMBRE';
+            values.nombre = condition.displayName || 'SIN NOMBRE';
             values.verificado = true;
-            values.password = condition._json.etag;
+            values.password = crypto.randomBytes(16).toString('hex');
             console.log('----------- VALUES ----------');
             console.log(values);
             self.create(values, (err, result) => {
