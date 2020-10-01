@@ -20,3 +20,7 @@ iniciar siguientes tests;
 jasmine spec/models/bicicleta_test.spec.js
 jasmine spec/models/usuario_test.spec.js
 
+## Usuario para pruebas
+
+Mail: test10@gmail.com
+Pass: 123qwe

@@ -96,7 +96,7 @@ usuarioSchema.methods.enviar_email_bienvenida = function(cb){
 
 
 usuarioSchema.methods.resetPassword = function(cb) {
-    const token = new TokenExpiredError({_userId: this.id, token: crypto.randomBytes(16).toString('hex')});
+    const token = new Token({_userId: this.id, token: crypto.randomBytes(16).toString('hex')});
     const email_destination = this.email;
     token.save(function(err){
         if (err) { return cb(err);}

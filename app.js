@@ -97,8 +97,14 @@ app.get('/forgotPassword', function(req, res){
 });
 
 app.post('/forgotPassword', function(req, res){
-  Usuario.findOne( { email: req.body.email }, function (err, usuario) {
-    if (!usuario) return res.render('session/forgotPassword', {info: {message: 'No existe el email para un usuario existente.'}});
+  Usuario.findOne( { 
+    email: req.body.email
+  }, function (err, usuario) {
+    if (!usuario) return res.render('session/forgotPassword', {
+      info: {
+        message: 'No existe el email para un usuario existente.'
+      }
+    });
 
     usuario.resetPassword(function(err) {
       if (err) return next(err);
@@ -110,32 +116,57 @@ app.post('/forgotPassword', function(req, res){
 });
 
 app.get('/resetPassword/:token', function(req, res, next) {
-  Token.findOne({ token: req.params.token }, function ( err, token ) {
-    if (!token) return res.status(400).send( { type: 'not-verifified', msg: 'No existe un usuario asociado al token. Verifique que su token no haya expirado'});
+  Token.findOne({
+     token: req.params.token
+  }, function ( err, token ) {
+    if (!token) return res.status(400).send( {
+       type: 'not-verifified', 
+       msg: 'No existe un usuario asociado al token. Verifique que su token no haya expirado'
+    });
 
     Usuario.findById(token._userId, function (err, usuario) {
-      if (!usuario) return res.status(400).send( { msg: 'No existe un usuario asociado al token'});
-      res.render('session/resetPassword', { errors: {}, usuario: usuario});
+      if (!usuario) return res.status(400).send( {
+         msg: 'No existe un usuario asociado al token'
+      });
+      res.render('session/resetPassword', {
+         errors: {}, 
+         usuario: usuario
+      });
     });
   });
 });
 
-app.post('/resetPassword', function(req, res) {
+app.post('/resetPassword', function (req, res) {
   if (req.body.password != req.body.confirm_password) {
-    res.render('session/resetPassword', {errors: {confirm_password: {message: 'No coincide con el password ingresado'}},
-        usuario: new Usuario({ email: req.body.email })});
+    res.render('session/resetPassword', {
+      errors: {
+        confirm_password: {
+          message: 'No coincide el password ingresado.'
+        }
+      },
+      usuario: new Usuario({
+        password: req.body.password
+      })
+    });
     return;
   }
-  Usuario.findOne({ email: req.body.email }, function ( err, usuario ) {
-      usuario.password = req.body.password; 
-      usuario.save(function(err) {
-        if (err) {
-          res.render('session/resetPassword', {errors: err.errors, usuario: new Usuario({ email: req.body.email })});
-        }
-        else {
-          res.redirect('session/login');
-        }});        
-      });
+  Usuario.findOne({
+    email: req.body.email
+  }, function (err, usuario) {
+    usuario.password = req.body.password;
+    usuario.save(function (err) {
+      if (err) {
+        res.render('session/resetPassword', {
+          errors: err.errors,
+          usuario: new Usuario({
+            email: req.body.email
+          })
+        });
+      } else {
+        res.redirect('/login');
+      }
+    });
+  });
 });
 
 
