@@ -52,7 +52,7 @@ var usuarioSchema = new Schema({
     
 });
 
-usuarioSchema.plugin(uniqueValidator,  {message: 'El {PATH} ya existe con otr ususario.'} );
+usuarioSchema.plugin(uniqueValidator,  {message: 'El {PATH} ya existe con otro ususario.'} );
 
 // funcion para encriptar la contraseña
 usuarioSchema.pre('save', function(next){
