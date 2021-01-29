@@ -1,8 +1,8 @@
 Bienvenido a Express
 
-# Curso Desarrollo Lado Servidor Nodejs Express Mongodb
+# Desarrollo Lado Servidor Nodejs Express Mongodb
 
-Este es el repositorio de Federico Rodriguez para el curso de Coursera Curso Desarrollo Lado Servidor Nodejs Express Mongodb
+Este es el repositorio de Federico Rodriguez
 https://github.com/fade90/red_bicicletas
 
 ## Installation
